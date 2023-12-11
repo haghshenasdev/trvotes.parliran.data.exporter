@@ -25,7 +25,7 @@ def main(page: ft.Page):
 
         soup = BeautifulSoup(page.content, "html.parser")
 
-        hajiTR = soup.find(id="myTable1").find_all("tr")[56].find_all('th')
+        hajiTR = soup.find(id="myTable1").find_all("tr")[int(txtNamyandehNumber.value)].find_all('th')
 
         title =  soup.find("div",class_ = "panel-footer").text
 
@@ -101,8 +101,8 @@ def main(page: ft.Page):
         try :
             data = get_data(URL)
             dlgTst.content=ft.Text(data[0] + "\n" + data[1]+ "\n" + data[2])
-        except :
-            dlgTst.content=ft.Text("داده ای یافت نشد!",color=ft.colors.RED)
+        except Exception as e:
+            dlgTst.content=ft.Text(f"داده ای یافت نشد! \n\n {e}",color=ft.colors.RED)
         page.update()
     def stopBtn_click(e) :
         stopBtn.disabled = True
@@ -118,7 +118,7 @@ def main(page: ft.Page):
         pbVal = 100/rangeCount
         shecastCount = apcentCount = momtaneCount = mokhalefCount = movafeghCount = counter = 0
         
-        lv.controls.append(ft.Text("شروع استخارج ، لیک های کارشده : "))
+        lv.controls.append(ft.Text("شروع استخارج ، لینک های کارشده : "))
         page.update()
         for i in range(int(fromInpt.value), int(toInpt.value)+1):
             if stopBtn.disabled  :
@@ -153,7 +153,7 @@ def main(page: ft.Page):
             page.update()
         stopBtn.disabled = True
         headerSetting.disabled = startBtn.disabled = False
-        lv.controls.append(ft.Text(f":اتمام استخارج . تعداد موفق {counter} تعداد شکست: {shecastCount} "))
+        lv.controls.append(ft.Text(f":اتمام استخارج . تعداد موفق {counter-shecastCount} تعداد شکست: {shecastCount} "))
         page.update()
     
     
@@ -165,6 +165,7 @@ def main(page: ft.Page):
     )
     startBtn = ft.ElevatedButton(text="شروع",col=6,on_click=startBtn_click)
     stopBtn = ft.ElevatedButton(text="توقف",col=6,on_click=stopBtn_click,color=ft.colors.RED_500,disabled=True)
+    txtNamyandehNumber = ft.TextField(label="شماره نماینده در جدول",value="56",col=6)
     pb = ft.ProgressBar(col=10,value=0)
     pbText = ft.Text("0",col=2,text_align=ft.TextAlign.CENTER)
     lv = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
@@ -197,7 +198,7 @@ def main(page: ft.Page):
                     ft.Text("پایه آنالیز"),
                     baseUrlIpt,
                     ft.ResponsiveRow([
-                        ft.TextField(label="شماره نماینده در جدول",value="56",col=6),
+                        txtNamyandehNumber,
                         ft.ElevatedButton(text="تست",on_click=testBtn_click,col=6,bgcolor=ft.colors.LIGHT_BLUE_50)
                     ],vertical_alignment=ft.CrossAxisAlignment.CENTER)
                 ]),padding=10)),
@@ -234,7 +235,7 @@ def main(page: ft.Page):
             ft.Card(content=ft.Container(padding=15,content=ft.ResponsiveRow(controls=[movafeghTxt,mokhalefTxt,momtaneTxt,apcentTxt]))),
             
             ft.Card(content=ft.Container(padding=15,content=ft.ResponsiveRow(vertical_alignment=ft.CrossAxisAlignment.CENTER,controls=[pathInput,ft.ElevatedButton("انتخاب مسیر",col=3,on_click=btnSelectDire_click),ft.ElevatedButton("ذخیره سازی",on_click=seveToExel_click,col=3)]))),
-            ft.Row(controls=[ft.ElevatedButton(text="نمایش اطلاعات استخراج شده",on_click=showExtarctedData),ft.TextButton("برنامه نسخه 1.0 ، برنامه نویس محمد مهدی حق شناس",on_click=lambda _:webbrowser.open('https://haghshenasdev.github.io/'))])
+            ft.Row(controls=[ft.ElevatedButton(text="نمایش اطلاعات استخراج شده",on_click=showExtarctedData),ft.TextButton("برنامه نسخه 1.0.4 ، برنامه نویس محمد مهدی حق شناس",on_click=lambda _:webbrowser.open('https://haghshenasdev.github.io/'))])
         ]),
                     
                 ],
